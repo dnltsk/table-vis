@@ -28,14 +28,14 @@
 </p>
 <script>
 
-    var width = 600,
+    let width = 600,
         height = 600;
 
-    var svg = d3.select("body").append("svg")
+    let svg = d3.select("body").append("svg")
         .attr("width", width)
         .attr("height", height);
 
-    var force = d3.layout.force()
+    let force = d3.layout.force()
         .gravity(.02)
         .distance(70)
         .charge(-100)
@@ -166,8 +166,7 @@
             graphLinks.push({"source": tableNodeId, "target": personNodeId})
         });
 
-        let net = {"nodes": graphNodes, "links": graphLinks};
-        return net;
+        return  {"nodes": graphNodes, "links": graphLinks};
     }
 
 </script>
