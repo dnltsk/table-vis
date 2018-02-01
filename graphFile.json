@@ -1,0 +1,43 @@
+{
+  "nodes":[
+    {"name":"MFS","group":0, "type": "project"},
+    {"name":"Table Vis","group":1, "type": "project"},
+    {"name":"AI","group":2, "type": "techno"},
+    {"name":"UX","group":3, "type": "board"},
+    {"name":"Cloud","group":4, "type": "techno"},
+    {"name":"Product Strategy","group":5, "type": "board"},
+
+
+    {"name":"Thomas","group":6, "type": "person"},
+    {"name":"Thomas","group":7, "type": "person"},
+    {"name":"Daniel","group":8, "type": "person"},
+    {"name":"Daniel","group":9, "type": "person"},
+    {"name":"Daniel","group":10, "type": "person"},
+    {"name":"Andreas","group":11, "type": "person"},
+    {"name":"Andreas","group":12, "type": "person"},
+    {"name":"Jens (PO)","group":13, "type": "person"},
+    {"name":"Jens (PO)","group":14, "type": "person"},
+    {"name":"Frank (Head)","group":15, "type": "person"},
+    {"name":"Miro (CEO)","group":16, "type": "person"}
+
+
+  ],
+  "links":[
+    {"source":1,"target":6,"weight":1},
+    {"source":3,"target":7,"weight":1},
+
+    {"source":0,"target":8,"weight":1},
+    {"source":1,"target":9,"weight":1},
+    {"source":4,"target":10,"weight":1},
+
+    {"source":0,"target":11,"weight":1},
+    {"source":4,"target":12,"weight":1},
+
+    {"source":0,"target":13,"weight":1},
+    {"source":5,"target":14,"weight":1},
+
+    {"source":4,"target":15,"weight":1},
+
+    {"source":5,"target":16,"weight":1}
+  ]
+}

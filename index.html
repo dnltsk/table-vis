@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<script src="https://d3js.org/d3.v2.min.js?2.9.3"></script>
+<style>
+
+    .link {
+        stroke: #aaa;
+    }
+
+    .node text {
+        stroke: #333;
+        cursos: pointer;
+    }
+
+    .node circle {
+        stroke: #fff;
+        stroke-width: 1px;
+        fill: #555;
+    }
+
+</style>
+<body>
+<p>
+    <a href="#" onclick="viewOn(null)">all</a>
+    <a href="#" onclick="viewOn('project')">projects</a>
+    <a href="#" onclick="viewOn('board')">boards</a>
+    <a href="#" onclick="viewOn('techno')">technos</a>
+</p>
+<script>
+
+    var width = 600,
+        height = 600;
+
+    var svg = d3.select("body").append("svg")
+        .attr("width", width)
+        .attr("height", height);
+
+    var force = d3.layout.force()
+        .gravity(.02)
+        .distance(70)
+        .charge(-100)
+        .size([width, height]);
+
+    d3.json("structure.json", function (structJson) {
+        let graphJson = convertStructureToGraph(structJson, null);
+        initNet(graphJson);
+    });
+
+    function initNet(json) {
+        force
+            .nodes(json.nodes)
+            .links(json.links)
+            .start();
+
+        let link = svg.selectAll(".link")
+            .data(json.links)
+            .enter().append("line")
+            .attr("class", "link")
+            .style("stroke-width", function (d) {
+                return Math.sqrt(d.weight);
+            });
+
+        let node = svg.selectAll(".node")
+            .data(json.nodes)
+            .enter().append("g")
+            .attr("class", "node")
+            .call(force.drag);
+
+        node.append("circle")
+            .attr("r", function (d) {
+                if (d.type === "person") {
+                    return 15;
+                }
+                return 30
+            })
+            .style("stroke", "black")    // set the line colour
+            .style("fill", function (d) {
+                console.log(d);
+                switch (d.type) {
+                    case "project":
+                        return "lightblue";
+                    case "techno":
+                        return "lightgreen";
+                    case "board":
+                        return "orange";
+                    default:
+                        return "white";
+                }
+            });
+
+        node.append("text")
+            .attr("text-anchor", "middle")
+            .attr("dy", ".35em")
+            .html(function (d) {
+                console.log(d.name);
+                return d.name
+            });
+
+        force.on("tick", function () {
+            link.attr("x1", function (d) {
+                return d.source.x;
+            })
+                .attr("y1", function (d) {
+                    return d.source.y;
+                })
+                .attr("x2", function (d) {
+                    return d.target.x;
+                })
+                .attr("y2", function (d) {
+                    return d.target.y;
+                });
+
+            node.attr("transform", function (d) {
+                return "translate(" + d.x + "," + d.y + ")";
+            });
+        });
+    }
+
+
+    function viewOn(filterOfType) {
+        console.log(filterOfType);
+        svg.selectAll(".node").remove();
+        svg.selectAll(".link").remove();
+
+        d3.json("structure.json", function (structJson) {
+            let graphJson = convertStructureToGraph(structJson, filterOfType);
+            initNet(graphJson);
+        });
+    }
+
+    function convertStructureToGraph(structJson, filterOfType) {
+        let structTables = structJson.tables;
+        let structPersons = structJson.persons;
+        let structLinks = structJson.links;
+        let graphNodes = [];
+        let graphLinks = [];
+        structLinks.forEach((structLink) => {
+            //filter
+            let structTable = structTables.find((t) => {
+                return t.name === structLink.tableName;
+            });
+            if (filterOfType !== null) {
+                if (structTable.type !== filterOfType) {
+                    return
+                }
+            }
+
+            //add table node is not exists
+            let tableNodeId = graphNodes.findIndex((graphNode) => {
+                return graphNode.name === structLink.tableName;
+            });
+            if (tableNodeId === -1) {
+                graphNodes.push({"name": structTable.name, "type": structTable.type});
+                tableNodeId = graphNodes.length - 1;
+            }
+            //create new person node
+            let structPerson = structPersons.find((p) => {
+                return p.name === structLink.personName;
+            });
+            graphNodes.push({
+                "name": structPerson.name + " (" + structLink.role + ")",
+                "type": "person"
+            });
+            let personNodeId = graphNodes.length - 1;
+            //create new graph link
+            graphLinks.push({"source": tableNodeId, "target": personNodeId})
+        });
+
+        let net = {"nodes": graphNodes, "links": graphLinks};
+        return net;
+    }
+
+</script>
+<p>
+    inspired by: https://bl.ocks.org/jose187/4733747
+</p>
+</body>

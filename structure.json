@@ -1,0 +1,32 @@
+{
+  "tables":[
+    {"name":"MFS", "type": "project"},
+    {"name":"Table Vis", "type": "project"},
+    {"name":"AI", "type": "techno"},
+    {"name":"UX", "type": "board"},
+    {"name":"Cloud", "type": "techno"},
+    {"name":"Product Strategy", "type": "board"}
+  ],
+  "persons": [
+    {"name":"Thomas"},
+    {"name":"Daniel"},
+    {"name":"Andreas"},
+    {"name":"Jens"},
+    {"name":"Frank"},
+    {"name":"Miro"}
+  ],
+  "links":[
+    {"tableName":"MFS", "personName": "Jens", "role": "PO"},
+    {"tableName":"MFS", "personName": "Andreas","role":"Dev"},
+    {"tableName":"MFS", "personName": "Daniel","role":"Dev"},
+    {"tableName":"Table Vis", "personName": "Thomas","role":"UX"},
+    {"tableName":"Table Vis", "personName": "Daniel","role":"Dev"},
+    {"tableName":"UX", "personName": "Thomas","role":"UX"},
+    {"tableName":"Cloud", "personName": "Frank","role":"Head"},
+    {"tableName":"Cloud", "personName": "Andreas","role":"Dev"},
+    {"tableName":"Cloud", "personName": "Daniel","role":"Dev"},
+    {"tableName":"Product Strategy", "personName": "Jens","role":"PO"},
+    {"tableName":"Product Strategy", "personName": "Frank","role":"Head"},
+    {"tableName":"Product Strategy", "personName": "Miro","role":"CEO"}
+  ]
+}
