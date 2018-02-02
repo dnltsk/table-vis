@@ -34,7 +34,6 @@
     {"tableName":"AI", "personName": "Chunlei","role":"Sci"},
     {"tableName":"AI", "personName": "Patrick","role":"Sci"},
     {"tableName":"AI", "personName": "Peter","role":"Sci"},
-
     {"tableName":"Cloud", "personName": "Frank","role":"Head"},
     {"tableName":"Cloud", "personName": "Andreas","role":"Dev"},
     {"tableName":"Cloud", "personName": "Daniel","role":"Dev"},
