@@ -24,6 +24,7 @@
     {"tableName":"MFS", "personName": "Jens", "role": "PO"},
     {"tableName":"MFS", "personName": "Andreas","role":"Dev"},
     {"tableName":"MFS", "personName": "Daniel","role":"Dev"},
+    {"tableName":"MFS", "personName": "Alexey","role":"Dev"},
     {"tableName":"Table Vis", "personName": "Thomas","role":"UX"},
     {"tableName":"Table Vis", "personName": "Daniel","role":"Dev"},
     {"tableName":"UX", "personName": "Thomas","role":"UX"},
