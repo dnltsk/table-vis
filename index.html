@@ -75,7 +75,6 @@
             })
             .style("stroke", "black")    // set the line colour
             .style("fill", function (d) {
-                console.log(d);
                 switch (d.type) {
                     case "project":
                         return "lightblue";
@@ -92,7 +91,6 @@
             .attr("text-anchor", "middle")
             .attr("dy", ".35em")
             .html(function (d) {
-                console.log(d.name);
                 return d.name
             });
 
@@ -118,7 +116,6 @@
 
 
     function viewOn(filterOfType) {
-        console.log(filterOfType);
         svg.selectAll(".node").remove();
         svg.selectAll(".link").remove();
 
