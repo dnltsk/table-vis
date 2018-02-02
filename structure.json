@@ -17,8 +17,10 @@
     {"name":"Frederik"},
     {"name":"Niels"},
     {"name":"Nils"},
-    {"name":"Alexey"}
-
+    {"name":"Alexey"},
+    {"name":"Chunglei"},
+    {"name":"Patrick"},
+    {"name":"Peter"}
   ],
   "links":[
     {"tableName":"MFS", "personName": "Jens", "role": "PO"},
@@ -29,6 +31,10 @@
     {"tableName":"Table Vis", "personName": "Daniel","role":"Dev"},
     {"tableName":"UX", "personName": "Thomas","role":"UX"},
     {"tableName":"UX", "personName": "Frederik","role":"UX"},
+    {"tableName":"AI", "personName": "Chunglei","role":"Sci"},
+    {"tableName":"AI", "personName": "Patrick","role":"Sci"},
+    {"tableName":"AI", "personName": "Peter","role":"Sci"},
+
     {"tableName":"Cloud", "personName": "Frank","role":"Head"},
     {"tableName":"Cloud", "personName": "Andreas","role":"Dev"},
     {"tableName":"Cloud", "personName": "Daniel","role":"Dev"},
