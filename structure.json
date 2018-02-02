@@ -13,7 +13,12 @@
     {"name":"Andreas"},
     {"name":"Jens"},
     {"name":"Frank"},
-    {"name":"Miro"}
+    {"name":"Miro"},
+    {"name":"Frederik"},
+    {"name":"Niels"},
+    {"name":"Nils"},
+    {"name":"Alexey"}
+
   ],
   "links":[
     {"tableName":"MFS", "personName": "Jens", "role": "PO"},
@@ -22,11 +27,15 @@
     {"tableName":"Table Vis", "personName": "Thomas","role":"UX"},
     {"tableName":"Table Vis", "personName": "Daniel","role":"Dev"},
     {"tableName":"UX", "personName": "Thomas","role":"UX"},
+    {"tableName":"UX", "personName": "Frederik","role":"UX"},
     {"tableName":"Cloud", "personName": "Frank","role":"Head"},
     {"tableName":"Cloud", "personName": "Andreas","role":"Dev"},
     {"tableName":"Cloud", "personName": "Daniel","role":"Dev"},
+    {"tableName":"Cloud", "personName": "Niels","role":"Dev"},
+    {"tableName":"Cloud", "personName": "Alexey","role":"Dev"},
     {"tableName":"Product Strategy", "personName": "Jens","role":"PO"},
     {"tableName":"Product Strategy", "personName": "Frank","role":"Head"},
-    {"tableName":"Product Strategy", "personName": "Miro","role":"CEO"}
+    {"tableName":"Product Strategy", "personName": "Miro","role":"CEO"},
+    {"tableName":"Product Strategy", "personName": "Nils","role":"PO"}
   ]
 }
