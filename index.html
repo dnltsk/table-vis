@@ -68,12 +68,18 @@
 
         node.append("circle")
             .attr("r", function (d) {
-                if (d.type === "person") {
+                if (d.type === "person" || d.type === "vacancy") {
                     return 15;
                 }
                 return 30
             })
-            .style("stroke", "black")    // set the line colour
+            .style("stroke", "black")
+            .style("stroke-dasharray", function(d){
+                if(d.type === "vacancy"){
+                    return ("3, 3");
+                }
+                return null;
+            })
             .style("fill", function (d) {
                 switch (d.type) {
                     case "project":
@@ -82,6 +88,8 @@
                         return "lightgreen";
                     case "board":
                         return "orange";
+                    case "vacancy":
+                        return "silver";
                     default:
                         return "white";
                 }
@@ -150,15 +158,26 @@
                 graphNodes.push({"name": structTable.name, "type": structTable.type});
                 tableNodeId = graphNodes.length - 1;
             }
+
             //create new person node
-            let structPerson = structPersons.find((p) => {
-                return p.name === structLink.personName;
-            });
-            graphNodes.push({
-                "name": structPerson.name + " (" + structLink.role + ")",
-                "type": "person"
-            });
+            if(structLink.personName !== undefined){
+                //existing person
+                let structPerson = structPersons.find((p) => {
+                    return p.name === structLink.personName;
+                });
+                graphNodes.push({
+                    "name": structPerson.name + " (" + structLink.role + ")",
+                    "type": "person"
+                });
+            }else{
+                //vacancy
+                graphNodes.push({
+                    "name": "(" + structLink.role + ")",
+                    "type": "vacancy"
+                });
+            }
             let personNodeId = graphNodes.length - 1;
+
             //create new graph link
             graphLinks.push({"source": tableNodeId, "target": personNodeId})
         });
