@@ -98,7 +98,7 @@ function convertStructureToGraph(structJson) {
         } else {
             //vacancy
             graphNodes.push({
-                "name": "¯\\_(ツ)_/¯",
+                "name": "👻",
                 "type": "vacancy",
                 "role": structLink.role,
                 "xid": newPersonId
