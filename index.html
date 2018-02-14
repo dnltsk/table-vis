@@ -56,7 +56,7 @@
 
     //let g = svg.append("g").attr("transform", "translate(" + width / 2 + "," + height / 2 + ")"),
     let linkG = g.append("g").attr("stroke", "silver").attr("stroke-width", 1.5).selectAll(".link"),
-        nodeG = g.append("g").attr("stroke", "silver").attr("stroke-width", 1.5).selectAll(".node"),
+        nodeG = g.append("g").selectAll(".node"),
         textNameG = g.append("g").selectAll(".text"),
         textRoleG = g.append("g").selectAll(".text");
 
@@ -74,16 +74,17 @@
         nodeG = nodeG.enter().append("circle")
             .attr("r", function (d) {
                 if (d.type === "person" || d.type === "vacancy") {
-                    return 0;
+                    return 20;
                 }
                 return 30;
             })
-            .style("stroke-dasharray", function (d) {
-                if (d.type === "vacancy") {
-                    return ("3, 3");
+            .style("stroke", function(d){
+                if(d.type === "person" || d.type === "vacancy"){
+                    return "white";
                 }
-                return null;
+                return "silver";
             })
+            .attr("stroke-width", 1.5)
             .style("fill", function (d, i) {
                 switch (d.type) {
                     case "project":
