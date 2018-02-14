@@ -74,7 +74,7 @@
         nodeG = nodeG.enter().append("circle")
             .attr("r", function (d) {
                 if (d.type === "person" || d.type === "vacancy") {
-                    return 20;
+                    return 0;
                 }
                 return 30;
             })
@@ -93,13 +93,15 @@
                     case "board":
                         return "orange";
                     case "vacancy":
-                        return "silver";
+                        return "white";
                     default:
                         return "white";
                 }
             })
             .on("click", function(d){
-                window.open(d.url, "_black");
+                if(d.url){
+                    window.open(d.url, "_black");
+                }
             })
             .call(d3.drag()
                 .on("start", dragStarted)
@@ -121,7 +123,7 @@
             .attr("text-anchor", "middle")
             .attr("dy", function(d){
                 if(d.type === "person" || d.type === "vacancy"){
-                    return "-.35em";
+                    return "-.30em";
                 }
                 return ".35em";
             })
@@ -150,7 +152,7 @@
         textRoleG = textRoleG.enter().append("text")
             .text(function(d){return d.role;})
             .attr("text-anchor", "middle")
-            .attr("dy", ".9em")
+            .attr("dy", ".85em")
             .style("font-size", "1em")
             .style("font-family", "Arial")
             .style("font-weight", function(d) {
