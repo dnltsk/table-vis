@@ -1,86 +1,90 @@
 <!DOCTYPE html>
-<meta charset="utf-8">
-<script src="https://d3js.org/d3.v2.min.js?2.9.3"></script>
 <style>
-
-    .link {
-        stroke: #aaa;
+    text {
+        pointer-events: none;
     }
-
-    .node text {
-        stroke: #333;
-        cursos: pointer;
-    }
-
-    .node circle {
-        stroke: #fff;
-        stroke-width: 1px;
-        fill: #555;
-    }
-
 </style>
 <body>
 <p>
-    <a href="#" onclick="viewOn(null)">all</a>
-    <a href="#" onclick="viewOn('project')">projects</a>
-    <a href="#" onclick="viewOn('board')">boards</a>
-    <a href="#" onclick="viewOn('techno')">technos</a>
+    <a href="#" onclick="filterNet(null)">all</a>
+    <a href="#" onclick="filterNet('project')">projects</a>
+    <a href="#" onclick="filterNet('board')">boards</a>
+    <a href="#" onclick="filterNet('techno')">technos</a>
 </p>
+<svg></svg>
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="data-wrangling.js"></script>
 <script>
 
-    let width = 900,
-        height = 750;
 
-    let svg = d3.select("body").append("svg")
-        .attr("width", width)
-        .attr("height", height);
-
-    let force = d3.layout.force()
-        .gravity(.02)
-        .distance(70)
-        .charge(-100)
-        .size([width, height]);
-
-    d3.json("structure.json", function (structJson) {
-        let graphJson = convertStructureToGraph(structJson, null);
-        initNet(graphJson);
+    d3.json("structure.json", (structJson) => {
+        let graphJson = convertStructureToGraph(structJson);
+        nodes = graphJson.nodes;
+        links = graphJson.links;
+        originalNodes = JSON.parse(JSON.stringify(nodes));
+        originalLinks = JSON.parse(JSON.stringify(links));
+        restart();
     });
 
-    function initNet(json) {
-        force
-            .nodes(json.nodes)
-            .links(json.links)
-            .start();
+    let width = 960,
+        height = 500;
 
-        let link = svg.selectAll(".link")
-            .data(json.links)
-            .enter().append("line")
-            .attr("class", "link")
-            .style("stroke-width", function (d) {
-                return Math.sqrt(d.weight);
-            });
+    let initialTransform = d3.zoomIdentity.translate(width/2, height/2).scale(1),
+        zoom = d3.zoom().scaleExtent([0.2, 2]).on("zoom", handleZoom);
 
-        let node = svg.selectAll(".node")
-            .data(json.nodes)
-            .enter().append("g")
-            .attr("class", "node")
-            .call(force.drag);
+    let svg = d3.select("svg")
+        .attr('width', width)
+        .attr('height', height)
+        .call(zoom)                       // Adds zoom functionality
+        .call(zoom.transform, initialTransform); // Calls/inits handleZoom,
 
-        node.append("circle")
+    let g = svg.append("g")
+            .attr("transform", initialTransform);
+
+    let originalNodes = [],
+        originalLinks = [],
+        nodes = [],
+        links = [];
+
+    let simulation = d3.forceSimulation(nodes)
+        .force("charge", d3.forceManyBody().strength(-200))
+        .force("link", d3.forceLink(links).distance(50))
+        .force("x", d3.forceX())
+        .force("y", d3.forceY())
+        .alphaTarget(0)
+        .on("tick", ticked);
+
+    //let g = svg.append("g").attr("transform", "translate(" + width / 2 + "," + height / 2 + ")"),
+    let linkG = g.append("g").attr("stroke", "silver").attr("stroke-width", 1.5).selectAll(".link"),
+        nodeG = g.append("g").attr("stroke", "silver").attr("stroke-width", 1.5).selectAll(".node"),
+        textNameG = g.append("g").selectAll(".text"),
+        textRoleG = g.append("g").selectAll(".text");
+
+    function restart() {
+
+        // Apply the general update pattern to the nodes.
+        nodeG = nodeG.data(nodes, function (d) {
+            return d.index;
+        });
+
+        nodeG.exit().transition()
+            .attr("r", 0)
+            .remove();
+
+        nodeG = nodeG.enter().append("circle")
             .attr("r", function (d) {
                 if (d.type === "person" || d.type === "vacancy") {
-                    return 15;
+                    return 20;
                 }
-                return 30
+                return 30;
             })
-            .style("stroke", "black")
-            .style("stroke-dasharray", function(d){
-                if(d.type === "vacancy"){
+            .style("stroke-dasharray", function (d) {
+                if (d.type === "vacancy") {
                     return ("3, 3");
                 }
                 return null;
             })
-            .style("fill", function (d) {
+            .style("fill", function (d, i) {
                 switch (d.type) {
                     case "project":
                         return "lightblue";
@@ -93,100 +97,142 @@
                     default:
                         return "white";
                 }
-            });
-
-        node.append("text")
-            .attr("text-anchor", "middle")
-            .attr("dy", ".35em")
-            .html(function (d) {
-                return d.name
-            });
-
-        force.on("tick", function () {
-            link.attr("x1", function (d) {
-                return d.source.x;
             })
-                .attr("y1", function (d) {
-                    return d.source.y;
-                })
-                .attr("x2", function (d) {
-                    return d.target.x;
-                })
-                .attr("y2", function (d) {
-                    return d.target.y;
-                });
+            .on("click", function(d){
+                window.open(d.url, "_black");
+            })
+            .call(d3.drag()
+                .on("start", dragStarted)
+                .on("drag", dragged)
+                .on("end", dragEnded))
+            .merge(nodeG);
 
-            node.attr("transform", function (d) {
-                return "translate(" + d.x + "," + d.y + ")";
-            });
+
+        textNameG = textNameG.data(nodes, function (d) {
+            return d.index;
         });
-    }
 
+        textNameG.exit().transition()
+            .style("font-size", "0em")
+            .remove();
 
-    function viewOn(filterOfType) {
-        svg.selectAll(".node").remove();
-        svg.selectAll(".link").remove();
-
-        d3.json("structure.json", function (structJson) {
-            let graphJson = convertStructureToGraph(structJson, filterOfType);
-            initNet(graphJson);
-        });
-    }
-
-    function convertStructureToGraph(structJson, filterOfType) {
-        let structTables = structJson.tables;
-        let structPersons = structJson.persons;
-        let structLinks = structJson.links;
-        let graphNodes = [];
-        let graphLinks = [];
-        structLinks.forEach((structLink) => {
-            //filter
-            let structTable = structTables.find((t) => {
-                return t.name === structLink.tableName;
-            });
-            if (filterOfType !== null) {
-                if (structTable.type !== filterOfType) {
-                    return
+        textNameG = textNameG.enter().append("text")
+            .text(function(d){return d.name;})
+            .attr("text-anchor", "middle")
+            .attr("dy", function(d){
+                if(d.type === "person" || d.type === "vacancy"){
+                    return "-.35em";
                 }
-            }
+                return ".35em";
+            })
+            .style("font-size", "1em")
+            .style("font-family", "Arial")
+            .style("font-weight", function(d) {
+                if(d.type === "person" || d.type === "vacancy"){
+                    return "normal";
+                }
+                return "bold";
+            })
+            .call(d3.drag()
+                .on("start", dragStarted)
+                .on("drag", dragged)
+                .on("end", dragEnded))
+            .merge(textNameG);
 
-            //add table node is not exists
-            let tableNodeId = graphNodes.findIndex((graphNode) => {
-                return graphNode.name === structLink.tableName;
-            });
-            if (tableNodeId === -1) {
-                graphNodes.push({"name": structTable.name, "type": structTable.type});
-                tableNodeId = graphNodes.length - 1;
-            }
-
-            //create new person node
-            if(structLink.personName !== undefined){
-                //existing person
-                let structPerson = structPersons.find((p) => {
-                    return p.name === structLink.personName;
-                });
-                graphNodes.push({
-                    "name": structPerson.name + " (" + structLink.role + ")",
-                    "type": "person"
-                });
-            }else{
-                //vacancy
-                graphNodes.push({
-                    "name": "(" + structLink.role + ")",
-                    "type": "vacancy"
-                });
-            }
-            let personNodeId = graphNodes.length - 1;
-
-            //create new graph link
-            graphLinks.push({"source": tableNodeId, "target": personNodeId})
+        textRoleG = textRoleG.data(nodes.filter(function(d){return d.type === "person" || d.type === "vacancy";}), function (d) {
+            return "text-"+d.index;
         });
 
-        return  {"nodes": graphNodes, "links": graphLinks};
+        textRoleG.exit().transition()
+            .style("font-size", "0em")
+            .remove();
+
+        textRoleG = textRoleG.enter().append("text")
+            .text(function(d){return d.role;})
+            .attr("text-anchor", "middle")
+            .attr("dy", ".9em")
+            .style("font-size", "1em")
+            .style("font-family", "Arial")
+            .style("font-weight", function(d) {
+                if(d.type === "person" || d.type === "vacancy"){
+                    return "normal";
+                }
+                return "bold";
+            })
+            .call(d3.drag()
+                .on("start", dragStarted)
+                .on("drag", dragged)
+                .on("end", dragEnded))
+            .merge(textRoleG);
+
+        // Apply the general update pattern to the links.
+        linkG = linkG.data(links, function (d) {
+            return d.source.id + "-" + d.target.id;
+        });
+
+        // Keep the exiting links connected to the moving remaining nodes.
+        linkG.exit().transition()
+            .attr("stroke-opacity", 0)
+            .attrTween("x1", function (d) {return function () {return d.source.x;};})
+            .attrTween("x2", function (d) {return function () {return d.target.x;};})
+            .attrTween("y1", function (d) {return function () {return d.source.y;};})
+            .attrTween("y2", function (d) {return function () {return d.target.y;};})
+            .remove();
+
+        linkG = linkG.enter().append("line")
+            .call(function (link) {
+                link.transition().attr("stroke-opacity", 1);
+            })
+            .merge(linkG);
+
+        // Update and restart the simulation.
+        simulation.nodes(nodes);
+        simulation.force("link").links(links);
+        simulation.alpha(1).restart();
+    }
+
+    function ticked() {
+        nodeG.attr("cx", function (d) {return d.x;})
+            .attr("cy", function (d) {return d.y;});
+
+        linkG.attr("x1", function (d) {return d.source.x;})
+            .attr("y1", function (d) {return d.source.y;})
+            .attr("x2", function (d) {return d.target.x;})
+            .attr("y2", function (d) {return d.target.y;});
+
+        textNameG.attr("x", function (d) {return d.x;})
+            .attr("y", function (d) {return d.y;});
+
+        textRoleG.attr("x", function (d) {return d.x;})
+            .attr("y", function (d) {return d.y;});
+    }
+
+    function dragStarted(d) {
+        if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+        d.fx = d.x;
+        d.fy = d.y;
+    }
+
+    function dragged(d) {
+        d.fx = d3.event.x;
+        d.fy = d3.event.y;
+    }
+
+    function dragEnded(d) {
+        if (!d3.event.active) simulation.alphaTarget(0);
+        d.fx = null;
+        d.fy = null;
+    }
+
+
+    //Zoom functions
+    function handleZoom(){
+        try {
+            //todo: catch the case when g is not defined yet.
+            g.attr("transform", d3.event.transform);
+        }catch(e){
+        }
     }
 
 </script>
-<p>
-    inspired by: https://bl.ocks.org/jose187/4733747
-</p>
 </body>

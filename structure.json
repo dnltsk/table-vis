@@ -1,11 +1,11 @@
 {
   "tables":[
-    {"name":"MFS", "type": "project"},
-    {"name":"Table Vis", "type": "project"},
-    {"name":"AI", "type": "techno"},
-    {"name":"UX", "type": "board"},
-    {"name":"Cloud", "type": "techno"},
-    {"name":"Product Strategy", "type": "board"}
+    {"name":"MFS", "type": "project", "url":"https://www.heise.de/newsticker/wirtschaft/"},
+    {"name":"Table Vis", "type": "project", "url":"https://www.heise.de/newsticker/netzpolitik/"},
+    {"name":"AI", "type": "techno", "url":"https://www.heise.de/newsticker/wissen/"},
+    {"name":"UX", "type": "board", "url":"https://www.heise.de/newsticker/entertainment/"},
+    {"name":"Cloud", "type": "techno", "url":"https://www.heise.de/newsticker/mobiles/"},
+    {"name":"Product Strategy", "type": "board", "url":"https://www.heise.de/newsticker/it/"}
   ],
   "persons": [
     {"name":"Thomas"},
