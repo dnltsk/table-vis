@@ -30,6 +30,7 @@
     {"tableName":"MFS", "role":"Dev"},
     {"tableName":"MFS", "role":"Dev"},
     {"tableName":"Table Vis", "personName": "Thomas","role":"UX"},
+    {"tableName":"Table Vis", "personName": "Frederik","role":"UI"},
     {"tableName":"Table Vis", "personName": "Daniel","role":"Dev"},
     {"tableName":"UX", "personName": "Thomas","role":"UX"},
     {"tableName":"UX", "personName": "Frederik","role":"UX"},
